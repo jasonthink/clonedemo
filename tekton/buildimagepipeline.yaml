@@ -1,0 +1,38 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-image-from-git
+  namespace: test
+spec:
+  workspaces:
+    - name: source-ws
+  params:
+    - name: giturl
+    - name: gitrevision
+    - name: image 
+    - name: context
+  tasks:
+    - name: clone-git
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.giturl)
+        - name: revision
+          value: $(params.gitrevision)
+      workspaces:
+        - name: output 
+          workspace: source-ws 
+    - name: build-image 
+      taskRef: 
+        name: buildah
+      runAfter:
+        - clone-git
+      params:
+        - name: IMAGE 
+          value: $(params.image)
+        - name: CONTEXT
+          value: $(params.context)
+      workspaces:
+        - name: source 
+          workspace: source-ws

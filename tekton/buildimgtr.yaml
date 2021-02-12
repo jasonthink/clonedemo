@@ -1,0 +1,26 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: buildimage
+  namespace: test 
+spec:
+  workspaces:
+    - name: source-ws
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+  pipelineRef:
+    name: build-image-from-git
+  params:
+    - name: giturl
+      value: https://github.com/jasonthink/clonedemo.git
+    - name: gitrevision 
+      value: main
+    - name: image 
+      value: jasonthink/clonedemo
+    - name: context 
+      value: /workspace/source

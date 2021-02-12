@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: clonetest
+  namespace: test
+spec:
+  taskRef:
+    name: git-clone
+  params:
+    - name: url
+      value: https://github.com/jasonthink/clonedemo.git
+    - name: revision
+      value: main
+  workspaces:
+    - name: output
+      emptyDir: {}
